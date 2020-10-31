@@ -59,7 +59,7 @@ public:
         data[size] = elem;
         size++;
     }
-    void pull_back() {
+    void pop_back() {
         size--;
     }
     void push_front(T elem) { //
@@ -130,7 +130,7 @@ template<class T> void TStack<T>::push(T elem) {
 
 template<class T> void TStack<T>::pop() {
     if (!empty())
-        pull_back();
+        pop_back();
     else throw "Stack empty";
 }
 
@@ -143,5 +143,61 @@ template<class T> bool TStack<T>::full() {
 }
 
 template<class T> size_t TStack<T>::getMaxSize() const {
+    return maxSize;
+}
+
+template<class T> class Queue: protected Vector<T> {
+    int maxSize;
+public:
+    Queue();
+    Queue(int maxs);
+    Queue(const Queue& s);
+    T next();
+    void push(T);
+    void pop();
+    bool empty();
+    bool full();
+    size_t getMaxSize() const;
+};
+
+template<class T> Queue<T>::Queue() : Vector<T>() {
+    maxSize = 0;
+}
+
+template<class T> Queue<T>::Queue(int maxs) : Vector<T>(0) {
+    maxSize = maxs;
+}
+
+template<class T> Queue<T>::Queue(const Queue& s) : Vector<T>(s) {
+    maxSize = s.maxSize;
+}
+
+template<class T> T Queue<T>::next() {
+    if (!empty())
+        return data[0];
+    else throw "Queue empty";
+}
+
+template<class T> void Queue<T>::push(T elem) {
+    if (!full())
+        push_back(elem);
+    else throw "Queue full";
+}
+
+template<class T> void Queue<T>::pop() {
+    if (!empty())
+        pop_front();
+    else throw "Stack empty";
+}
+
+template<class T> bool Queue<T>::empty() {
+    return (size == 0);
+}
+
+template<class T> bool Queue<T>::full() {
+    return (size == maxSize);
+}
+
+template<class T> size_t Queue<T>::getMaxSize() const {
     return maxSize;
 }
