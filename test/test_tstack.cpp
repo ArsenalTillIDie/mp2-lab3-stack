@@ -70,11 +70,14 @@ TEST(Queue, can_detect_emptiness) {
     ASSERT_TRUE(s.empty());
 }
 
-TEST(Queue, cannot_push_full_queue) {
+TEST(Queue, can_push_full_queue) {
     Queue<int> s(2);
     s.push(2);
     s.push(4);
-    ASSERT_ANY_THROW(s.push(3));
+    s.push(3);
+    s.pop();
+    s.pop();
+    ASSERT_EQ(s.next(), 3);
 }
 
 TEST(Queue, cannot_pop_empty_queue) {
@@ -87,5 +90,18 @@ TEST(Queue, copy_constructor_works) {
     s1.push(2);
     s1.push(4);
     Queue<int> s2(s1);
-    ASSERT_TRUE(s1.next() == s2.next() && s1.getMaxSize() == s2.getMaxSize());
+    ASSERT_TRUE(s1.next() == s2.next() && s1.getNElems() == s2.getNElems());
+}
+
+TEST(Queue, can_deal_with_many_pushes_and_pops) {
+    Queue<int> s(3);
+    s.push(2);
+    s.push(3);
+    s.push(4);
+    s.pop();
+    s.push(5);
+    s.push(6);
+    s.pop();
+    s.pop();
+    ASSERT_EQ(s.next(), 5);
 }

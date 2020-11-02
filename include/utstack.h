@@ -147,57 +147,78 @@ template<class T> size_t TStack<T>::getMaxSize() const {
 }
 
 template<class T> class Queue: protected Vector<T> {
-    int maxSize;
+private:
+    int nextIndex(int index) {
+        if (index == size - 1) return 0;
+        else return index + 1;
+    }
+
+    bool full() {
+        return nElems == size;
+    }
+protected:
+    int start;
+    int end;
+    int nElems;
 public:
     Queue();
-    Queue(int maxs);
+    Queue(int size);
     Queue(const Queue& s);
     T next();
     void push(T);
     void pop();
     bool empty();
-    bool full();
-    size_t getMaxSize() const;
+    size_t getNElems() const;
 };
 
-template<class T> Queue<T>::Queue() : Vector<T>() {
-    maxSize = 0;
+template<class T> Queue<T>::Queue() : Vector<T>(0) {
+    start = 0;
+    end = 0;
+    nElems = 0;
 }
 
-template<class T> Queue<T>::Queue(int maxs) : Vector<T>(0) {
-    maxSize = maxs;
+template<class T> Queue<T>::Queue(int size) : Vector<T>(size) {
+    start = 0;
+    end = 0;
+    nElems = 0;
 }
 
 template<class T> Queue<T>::Queue(const Queue& s) : Vector<T>(s) {
-    maxSize = s.maxSize;
+    start = s.start;
+    end = s.end;
+    nElems = s.nElems;
 }
 
 template<class T> T Queue<T>::next() {
     if (!empty())
-        return data[0];
+        return data[start];
     else throw "Queue empty";
 }
 
 template<class T> void Queue<T>::push(T elem) {
-    if (!full())
-        push_back(elem);
-    else throw "Queue full";
+    if (!full()) {
+        data[end] = elem;
+    }
+    else {
+        start = nextIndex(start);
+        insert(elem, end);
+    }
+    end = nextIndex(end);
+    nElems++;
 }
 
 template<class T> void Queue<T>::pop() {
-    if (!empty())
-        pop_front();
-    else throw "Stack empty";
+    if (!empty()) {
+        start = nextIndex(start);
+    }
+    else throw "Queue empty";
+    nElems--;
 }
 
 template<class T> bool Queue<T>::empty() {
-    return (size == 0);
+    return nElems == 0;
 }
 
-template<class T> bool Queue<T>::full() {
-    return (size == maxSize);
-}
-
-template<class T> size_t Queue<T>::getMaxSize() const {
-    return maxSize;
+template<class T> size_t Queue<T>::getNElems() const {
+    return nElems;
 }
