@@ -105,3 +105,30 @@ TEST(Queue, can_deal_with_many_pushes_and_pops) {
     s.pop();
     ASSERT_EQ(s.next(), 5);
 }
+
+TEST(Queue, works_correctly) {
+    Queue<int> queue(5);  // capacity=5, size=0
+    queue.push(1);        // data={1, 0, 0, 0, 0}, pop_index=0, push_index=1
+    queue.push(2);        // data={1, 2, 0, 0, 0}, pop_index=0, push_index=2
+    queue.push(3);        // data={1, 2, 3, 0, 0}, pop_index=0, push_index=3
+    queue.pop();          // data={0, 2, 3, 0, 0}, pop_index=1, push_index=3
+    queue.push(4);        // data={0, 2, 3, 4, 0}, pop_index=1, push_index=4
+    queue.pop();          // data={0, 0, 3, 4, 0}, pop_index=2, push_index=4
+    queue.push(5);        // data={0, 0, 3, 4, 5}, pop_index=2, push_index=0
+    queue.push(6);        // data={6, 0, 3, 4, 5}, pop_index=2, push_index=1
+    queue.push(7);        // data={6, 7, 3, 4, 5}, pop_index=2, push_index=2
+    queue.push(8);        // new capasity=8 (for example), data={3, 4, 5, 6, 7, 0, 0, 0}, pop_index=0, push_index=5
+    bool mistakeFlag = false;
+    if (queue.next() != 3) mistakeFlag = true;
+    queue.pop();
+    if (queue.next() != 4) mistakeFlag = true;
+    queue.pop();
+    if (queue.next() != 5) mistakeFlag = true;
+    queue.pop();
+    if (queue.next() != 6) mistakeFlag = true;
+    queue.pop();
+    if (queue.next() != 7) mistakeFlag = true;
+    queue.pop();
+    if (queue.next() != 8) mistakeFlag = true;
+    ASSERT_FALSE(mistakeFlag);
+}
