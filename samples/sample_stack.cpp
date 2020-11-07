@@ -56,8 +56,8 @@ public:
     StackWithMinimum(int maxs) : TStack<T>(maxs) {
         minimums.TStack::TStack(maxs);
     }
-    StackWithMinimum(const TStack& s) : TStack<T>(s) {
-        minimums.TStack::TStack(s);
+    StackWithMinimum(const StackWithMinimum& s) : TStack<T>(s) {
+        minimums.TStack::TStack(s.minimums);
     }
     void push(T elem) {
         if (empty() || elem < minimums.top()) minimums.push(elem);
