@@ -59,7 +59,7 @@ public:
         data[size] = elem;
         size++;
     }
-    void pull_back() {
+    void pop_back() {
         size--;
     }
     void push_front(T elem) { //
@@ -130,7 +130,7 @@ template<class T> void TStack<T>::push(T elem) {
 
 template<class T> void TStack<T>::pop() {
     if (!empty())
-        pull_back();
+        pop_back();
     else throw "Stack empty";
 }
 
@@ -144,4 +144,95 @@ template<class T> bool TStack<T>::full() {
 
 template<class T> size_t TStack<T>::getMaxSize() const {
     return maxSize;
+}
+
+template<class T> class Queue: protected Vector<T> {
+private:
+    int nextIndex(int index) {
+        if (index == size - 1) return 0;
+        else return index + 1;
+    }
+
+    bool full() {
+        return nElems == size;
+    }
+    int end() {
+        return (start + nElems) % size;
+    }
+protected:
+    int start;
+  //  int end;
+    int nElems;
+public:
+    Queue();
+    Queue(int size);
+    Queue(const Queue& s);
+    T next();
+    void push(T);
+    void pop();
+    bool empty();
+    size_t getNElems() const;
+};
+
+template<class T> Queue<T>::Queue() : Vector<T>(0) {
+    start = 0;
+  //  end = 0;
+    nElems = 0;
+}
+
+template<class T> Queue<T>::Queue(int size) : Vector<T>(size) {
+    start = 0;
+//    end = 0;
+    nElems = 0;
+}
+
+template<class T> Queue<T>::Queue(const Queue& s) : Vector<T>(s) {
+    start = s.start;
+ //   end = s.end;
+    nElems = s.nElems;
+}
+
+template<class T> T Queue<T>::next() {
+    if (!empty())
+        return data[start];
+    else throw "Queue empty";
+}
+
+template<class T> void Queue<T>::push(T elem) {
+    if (!full()) {
+        data[end()] = elem;
+        nElems++;
+   //     end = nextIndex(end);
+    }
+    else {
+        Queue tmp(*this);
+        start = 0;
+     //   end = 0;
+        nElems = 0;
+        while (!tmp.empty()) {
+            push(tmp.next());
+            tmp.pop();
+        } 
+        push_back(elem);
+        nElems++;
+ //       end = nextIndex(nElems - 1);
+        size = memSize;
+    }
+   
+}
+
+template<class T> void Queue<T>::pop() {
+    if (!empty()) {
+        start = nextIndex(start);
+    }
+    else throw "Queue empty";
+    nElems--;
+}
+
+template<class T> bool Queue<T>::empty() {
+    return nElems == 0;
+}
+
+template<class T> size_t Queue<T>::getNElems() const {
+    return nElems;
 }
